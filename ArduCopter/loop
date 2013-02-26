@@ -1,0 +1,113 @@
+APM_Config_mavlink_hil.h:// while you are running hardware in the loop it is necessary to set
+APM_Config_mavlink_hil.h:// as the hardware in the loop port. You will have to solder
+APM_Config_mavlink_hil.h:// hardware in the loop you may use the telemetry port as the hardware in
+APM_Config_mavlink_hil.h:// the loop port.  Alternatively, use a telemetry/HIL shim like FGShim
+APM_Config_mavlink_hil.h:// in the loop simulation
+ArduCopter.pde:// the rate we run the main loop at
+ArduCopter.pde:    uint8_t run_50hz_loop           : 1; // 7   // toggles the 100hz loop for 50hz
+ArduCopter.pde:// Updated with the fast loop
+ArduCopter.pde:// Time in microseconds of main control loop
+ArduCopter.pde:static uint32_t fast_loopTimer;
+ArduCopter.pde:// Time in microseconds of 50hz control loop
+ArduCopter.pde:static uint32_t fiftyhz_loopTimer = 0;
+ArduCopter.pde:// Counters for branching from 10 hz control loop
+ArduCopter.pde:static byte medium_loopCounter;
+ArduCopter.pde:// Counters for branching from 3 1/3hz control loop
+ArduCopter.pde:static byte slow_loopCounter;
+ArduCopter.pde:// Counter of main loop executions.  Used for performance monitoring and failsafe processing
+ArduCopter.pde:// Counters for branching from 4 minute control loop used to save Compass offsets
+ArduCopter.pde:static int16_t superslow_loopCounter;
+ArduCopter.pde:void loop()
+ArduCopter.pde:        Log_Write_Data(DATA_FAST_LOOP, (int32_t)(timer - fast_loopTimer));
+ArduCopter.pde:        // check loop time
+ArduCopter.pde:        perf_info_check_loop_time(timer - fast_loopTimer);
+ArduCopter.pde:        G_Dt                            = (float)(timer - fast_loopTimer) / 1000000.f;                  // used by PI Loops
+ArduCopter.pde:        fast_loopTimer          = timer;
+ArduCopter.pde:        // for mainloop failure monitoring
+ArduCopter.pde:        // Execute the fast loop
+ArduCopter.pde:        fast_loop();
+ArduCopter.pde:        // run the 50hz loop 1/2 the time
+ArduCopter.pde:        ap_system.run_50hz_loop = !ap_system.run_50hz_loop;
+ArduCopter.pde:        if(ap_system.run_50hz_loop) {
+ArduCopter.pde:            Log_Write_Data(DATA_MED_LOOP, (int32_t)(timer - fiftyhz_loopTimer));
+ArduCopter.pde:            fiftyhz_loopTimer               = timer;
+ArduCopter.pde:            medium_loop();
+ArduCopter.pde:            // Stuff to run at full 50hz, but after the med loops
+ArduCopter.pde:            fifty_hz_loop();
+ArduCopter.pde:            // trgger our 1 hz loop
+ArduCopter.pde:                super_slow_loop();
+ArduCopter.pde:        if (timer - fast_loopTimer < 9000) {
+ArduCopter.pde:// Main loop - 100hz
+ArduCopter.pde:static void fast_loop()
+ArduCopter.pde:static void medium_loop()
+ArduCopter.pde:    // This is the start of the medium (10 Hz) loop pieces
+ArduCopter.pde:    switch(medium_loopCounter) {
+ArduCopter.pde:        medium_loopCounter++;
+ArduCopter.pde:        medium_loopCounter++;
+ArduCopter.pde:        medium_loopCounter++;
+ArduCopter.pde:        medium_loopCounter++;
+ArduCopter.pde:    // This case controls the slow loop
+ArduCopter.pde:        medium_loopCounter = 0;
+ArduCopter.pde:        slow_loop();
+ArduCopter.pde:        medium_loopCounter = 0;
+ArduCopter.pde:static void fifty_hz_loop()
+ArduCopter.pde:static void slow_loop()
+ArduCopter.pde:    // Run the AP_Limits main loop
+ArduCopter.pde:    limits_loop();
+ArduCopter.pde:    // This is the slow (3 1/3 Hz) loop pieces
+ArduCopter.pde:    switch (slow_loopCounter) {
+ArduCopter.pde:        slow_loopCounter++;
+ArduCopter.pde:        superslow_loopCounter++;
+ArduCopter.pde:        if(superslow_loopCounter > 1200) {
+ArduCopter.pde:                superslow_loopCounter = 0;
+ArduCopter.pde:        slow_loopCounter++;
+ArduCopter.pde:        slow_loopCounter = 0;
+ArduCopter.pde:        slow_loopCounter = 0;
+ArduCopter.pde:// 1Hz loop
+ArduCopter.pde:static void super_slow_loop()
+ArduCopter.pde:            // force an exit from the loop if we are not hands off sticks.
+ArduCopter.pde:    // To-Do: remove alt_sensor_flag and move update_altitude to be called from 10hz loop
+commands_logic.pde:    static int8_t jump = -10;                                                                   // used to track loops in jump command
+commands_process.pde:// called by 10 Hz loop
+failsafe.pde://  our failsafe strategy is to detect main loop lockup and disarm the motors
+failsafe.pde:// failsafe_disable - used when we know we are going to delay the mainloop significantly
+failsafe.pde:        // the main loop is running, all is OK
+failsafe.pde:        // main loop ran. That means we're in trouble and should
+GCS_Mavlink.pde:    // if the parameter can be cast to float, report it here and break out of the loop
+leds.pde:    copter_leds_motor_blink++;                                                                                                                                                  // this increments once every 1/10 second because it is in the 10hz loop
+leds.pde:    copter_leds_motor_blink++;                                                                                                                                                  // this increments once every 1/10 second because it is in the 10hz loop
+leds.pde:    copter_leds_motor_blink++;                                                                                                                                                  // this increments once every 1/10 second because it is in the 10hz loop
+leds.pde:    copter_leds_GPS_blink++;                                                    // this increments once every 1/10 second because it is in the 10hz loop
+leds.pde:    copter_leds_GPS_blink++;                                                    // this increments once every 1/10 second because it is in the 10hz loop
+leds.pde:void piezo_beep(){                                                              // Note! This command should not be used in time sensitive loops
+limits.pde:// Main state machine loop for AP_Limits. Called from slow or superslow loop.
+limits.pde:static void limits_loop() {
+Log.pde:    DataFlash.WriteInt(perf_info_get_num_long_running());   //4  - number of long running loops
+Log.pde:    DataFlash.WriteInt(perf_info_get_num_loops());          //5  - total number of loops
+Log.pde:    DataFlash.WriteLong(perf_info_get_max_time());          //6  - time of longest running loop
+navigation.pde:        dTnav = 0.02;   // To-Do: calculate the time from the mainloop or INS readings?
+options.cmake:    DESCRIPTION "Hardware-in-the-loop- mode?"
+perf_info.pde://  we measure the main loop time
+perf_info.pde:uint16_t perf_info_loop_count;
+perf_info.pde:// perf_info_reset - reset all records of loop time to zero
+perf_info.pde:    perf_info_loop_count = 0;
+perf_info.pde:// perf_info_check_loop_time - check latest loop time vs min, max and overtime threshold
+perf_info.pde:void perf_info_check_loop_time(uint32_t time_in_micros)
+perf_info.pde:    perf_info_loop_count++;
+perf_info.pde:// perf_info_get_long_running_percentage - get number of long running loops as a percentage of the total number of loops
+perf_info.pde:uint16_t perf_info_get_num_loops()
+perf_info.pde:    return perf_info_loop_count;
+perf_info.pde:// perf_info_get_max_time - return maximum loop time (in microseconds)
+perf_info.pde:// perf_info_get_num_long_running - get number of long running loops
+ReleaseNotes.txt:- Watch dog added to shutdown motors if main loop feezes for 2 seconds (Randy)
+ReleaseNotes.txt:- More timing improvements (main loop is now tied to MPU6000s interrupt) (Randy)
+system.pde:     *  setup the 'main loop is dead' check. Note that this relies on
+test.pde: *               if (millis() - fast_loopTimer > 19) {
+test.pde: *                       delta_ms_fast_loop     = millis() - fast_loopTimer;
+test.pde: *                       fast_loopTimer		= millis();
+test.pde: *                       G_Dt               = (float)delta_ms_fast_loop / 1000.f;
+test.pde: *                               medium_loopCounter++;
+test.pde: *                               if(medium_loopCounter == 5){
+test.pde: *                                       medium_loopCounter = 0;
+test.pde: *                       //cliSerial->printf_P(PSTR("timer: %d, r: %d\tp: %d\t y: %d\n"), (int)delta_ms_fast_loop, ((int)dcm.roll_sensor/100), ((int)dcm.pitch_sensor/100), ((uint16_t)dcm.yaw_sensor/100));
+test.pde: *                       //cliSerial->printf_P(PSTR("timer: %d, r: %d\tp: %d\t y: %d\n"), (int)delta_ms_fast_loop, ((int)dcm.roll_sensor/100), ((int)dcm.pitch_sensor/100), ((uint16_t)dcm.yaw_sensor/100));
