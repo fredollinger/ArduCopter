@@ -1,5 +1,5 @@
 boolean isExtruding=false;
-int height = 0;
+long height = 0;
 int heightPin = 4;
 int extruderPin = 9;
 
@@ -20,9 +20,9 @@ void pullHigh(int pin) {
 
 // BEGIN loop()
 void loop() {
-
-    // Wait until we are 30 cm above the ground
-    height = pulseIn(heightPin, HIGH);             // open extruder
+    pinMode(heightPin, INPUT);
+    int duration=pulseIn(heightPin, HIGH);            
+    height = microsecondsToCentimeters(duration);
 
     if ( height > 30 && height < 100 && false == isExtruding ) {
       pullHigh(extruderPin);
@@ -36,3 +36,10 @@ void loop() {
 
 } // END loop()
 
+long microsecondsToCentimeters(long microseconds)
+{
+    // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+    // The ping travels out and back, so to find the distance of the
+    // object we take half of the distance travelled.
+    return microseconds / 29 / 2;
+}
