@@ -1,0 +1,81 @@
+boolean isExtruding=false;
+long cm = 0;
+int heightPin = 7;
+int extruderPin = 9;
+//long cm;
+
+
+void setup() {
+    pinMode(7,INPUT);
+    pinMode(9,OUTPUT);
+    Serial.begin(9600);
+}
+
+void pullHigh(int pin) {
+        pinMode(pin, OUTPUT);
+        digitalWrite(pin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(pin, HIGH);
+//        delayMicroseconds(5);
+//        digitalWrite(pin, LOW);
+        //-----
+           
+}
+
+// BEGIN loop()
+void loop() {
+   // pullHigh  
+   
+   //this has to happen or it dose not work!!
+   pullHigh(heightPin);
+   delayMicroseconds(5);
+   //------------------
+   digitalWrite(heightPin, LOW);
+  pinMode(heightPin, INPUT);
+  
+  long duration=pulseIn(heightPin, HIGH);            
+   cm = microsecondsToCentimeters(duration);
+
+    if ( cm > 30 && cm < 100 && false == isExtruding ) {
+      pullHigh(extruderPin);
+      isExtruding = true;
+//      Serial.print(isExtruding);
+//      Serial.print("working");
+//      Serial.println();
+    }
+
+    // Wait until we are 100 cm above
+//    if (  cm > 100 && true ==  isExtruding ) {
+  if (cm >100){
+        pinMode(extruderPin, OUTPUT);
+        digitalWrite(extruderPin, LOW); // close extruder
+        isExtruding = false;
+//        Serial.print(isExtruding);
+//      Serial.print("working");
+//      Serial.println();
+    }
+//     pinMode(heightPin, INPUT);
+//  cm = pulseIn(heightPin, HIGH);
+  
+// cm = microsecondsToCentimeters(duration);
+//  Serial.print(duration);
+//  Serial.print(" duration");
+  Serial.print(isExtruding);
+  Serial.print("isExtruding");
+  Serial.println();
+
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+  
+  delay(500);
+    
+} // END loop()
+
+long microsecondsToCentimeters(long microseconds)
+{
+    // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+    // The ping travels out and back, so to find the distance of the
+    // object we take half of the distance travelled.
+    return microseconds / 29 / 2;
+}
