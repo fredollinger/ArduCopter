@@ -1,3 +1,5 @@
+#include <WProgram.h>
+
 boolean isExtruding=false;
 long height = 0;
 int heightPin = 4;

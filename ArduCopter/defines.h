@@ -197,6 +197,7 @@
 #define WP_MODE 2
 #define CIRCLE_MODE 3
 #define NO_NAV_MODE 4
+#define PAINT_MODE 5
 
 // Yaw override behaviours - used for setting yaw_override_behaviour
 #define YAW_OVERRIDE_BEHAVIOUR_AT_NEXT_WAYPOINT     0   // auto pilot takes back yaw control at next waypoint

@@ -1,0 +1,20 @@
+GGGGGGGGGGG
+GWWWWWWWWWG
+GWWBWWBWWWG
+GWWWWWWWWWG
+GWWBWWBWWWG
+GWWWWCWWWWG
+GWWWWWWWWWG
+GGGGGGGGGGG
+
+1. Take off to hover
+
+2. Go straight
+
+3. Analyze the camera and look for
+
+a. if G then back up one until W then turn 90 then go straight
+
+b. if W then continue straight
+
+c. if B then stop and extrude 

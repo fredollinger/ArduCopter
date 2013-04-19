@@ -67,8 +67,8 @@ AUTO 		- Will fly the mission loaded by the Waypoint writer
 GUIDED	- A future mode where the copter can be flown interactively from the GCS
 
 
-Special note:
-The props will NOT spin in stabilize when throttle is in the off position, even when armed.
-Arming is Yaw right for 1 sec, disarm is yaw left for 1 sec. Just give it some juice to confirm arming.
+Special note: The props will NOT spin in stabilize when throttle is in the off
+position, even when armed.  Arming is Yaw right for 1 sec, disarm is yaw left
+for 1 sec. Just give it some juice to confirm arming.
 
 Auto modes will NOT engage until the throttle is above neutral. So if you put the control switch to positio hold while it's on the ground, it will no spin up. Or at leat it shouldn't ;)

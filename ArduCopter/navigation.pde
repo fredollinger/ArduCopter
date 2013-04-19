@@ -60,7 +60,7 @@ static void update_navigation()
         if (log_output && (g.log_bitmask & MASK_LOG_NTUN) && motors.armed()) {
             Log_Write_Nav_Tuning();
         }
-    }
+    } // END update_navigation()
 
     // reduce nav outputs to zero if we have not received a gps update in 2 seconds
     if( millis() - nav_last_gps_update > 2000 ) {
@@ -348,6 +348,11 @@ static void update_nav_wp()
             // use error as the desired rate towards the target
             calc_nav_rate(speed);
             break;
+
+        case PAINT_MODE:
+          // speed = get_desired_speed(g.waypoint_speed_max);
+          // TED AND FRED INSERT CODE HERE
+          break;
 
         case NO_NAV_MODE:
             // clear out our nav so we can do things like land straight down
